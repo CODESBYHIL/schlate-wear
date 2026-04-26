@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCHLATE.WEAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --off-white: #f0eeea;
+      --gray: #888888;
+      --light-gray: #1a1a1a;
+      --accent: #FF1F4E;
+      --accent-dim: #991230;
+      --accent-glow: rgba(255, 31, 78, 0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--white);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor.expand {
+      width: 40px; height: 40px;
+      background: var(--accent);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      mix-blend-mode: difference;
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(255,31,78,0.07) 0%, transparent 70%);
+    }
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    .hero-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 48px;
+      opacity: 0;
+    }
+
+    /* ── LOGO SVG ── */
+    .logo-wrap {
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards, logoGlitch 4s 2.5s infinite;
+      margin-bottom: 56px;
+    }
+    .logo-svg {
+      width: min(600px, 85vw);
+    }
+
+    .hero-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gray);
+      opacity: 0;
+      animation: fadeUp 1s 0.8s forwards;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeIn 1s 1.4s forwards;
+    }
+    .hero-scroll span {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      overflow: hidden;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+      padding: 20px 0;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 80px;
+      width: max-content;
+      animation: marquee 18s linear infinite;
+    }
+    .marquee-track span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    .marquee-track span.dot { color: var(--accent); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 120px 48px; }
+
+    /* ── STATEMENT ── */
+    #statement {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .statement-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 40px;
+      display: block;
+    }
+    .statement-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      letter-spacing: 0.04em;
+      color: var(--white);
+    }
+    .statement-text em {
+      font-style: normal;
+      color: var(--accent);
+      text-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    /* ── DROPPING ── */
+    #dropping {
+      border-top: 1px solid #1a1a1a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+    }
+    .drop-left {
+      padding: 100px 48px;
+      border-right: 1px solid #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .drop-right {
+      padding: 100px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .drop-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 24px;
+    }
+    .drop-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 5vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+    }
+    .drop-title .accent { color: var(--accent); }
+    .drop-body {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--gray);
+      max-width: 380px;
+    }
+
+    /* ── GRID PREVIEW ── */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 280px);
+      gap: 2px;
+    }
+    .preview-cell {
+      background: var(--light-gray);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preview-cell:first-child {
+      grid-row: span 2;
+      background: linear-gradient(160deg, #1a0008 0%, #0d0d0d 60%);
+      border: 1px solid rgba(255,31,78,0.15);
+    }
+    .preview-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .preview-cell:hover::after { opacity: 0.5; }
+    .cell-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      color: #333;
+      z-index: 1;
+    }
+    .preview-cell:first-child .cell-label {
+      font-size: 1.4rem;
+      color: rgba(255,31,78,0.4);
+    }
+
+    /* ── NOTIFY ── */
+    #notify {
+      border-top: 1px solid #1a1a1a;
+      text-align: center;
+      padding: 140px 48px;
+      background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,31,78,0.06) 0%, transparent 70%);
+    }
+    .notify-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 32px;
+      display: block;
+    }
+    .notify-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 6rem);
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .notify-sub {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-bottom: 56px;
+      letter-spacing: 0.05em;
+    }
+    .notify-form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto;
+      border: 1px solid rgba(255,31,78,0.35);
+      box-shadow: 0 0 30px rgba(255,31,78,0.08);
+    }
+    .notify-form input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 18px 20px;
+      color: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    .notify-form input::placeholder { color: #444; }
+    .notify-form button {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 18px 28px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .notify-form button:hover {
+      background: #ff4468;
+      box-shadow: 0 0 20px rgba(255,31,78,0.4);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid #1a1a1a;
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      color: var(--gray);
+    }
+    .footer-copy {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: #333;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-socials a {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #444;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-socials a:hover { color: var(--accent); }
+
+    /* ── GLITCH ── */
+
+    /* scanlines overlay on hero */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.18) 3px,
+        rgba(0,0,0,0.18) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+    /* make hero children sit above scanlines */
+    #hero > * { position: relative; z-index: 2; }
+
+    /* glitch wrapper */
+    .glitch-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* red & cyan ghost channels */
+    .glitch-wrap::before,
+    .glitch-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: inherit;
+      pointer-events: none;
+    }
+
+    /* logo glitch — fires every 4s, lasts ~0.4s */
+    @keyframes logoGlitch {
+      0%,  89%  { transform: none; filter: none; }
+      90%        { transform: translate(-3px, 0); filter: none; }
+      91%        { transform: translate(3px, 0);
+                   filter: drop-shadow(-3px 0 0 rgba(255,31,78,0.8))
+                           drop-shadow(3px 0 0 rgba(0,220,255,0.5)); }
+      92%        { transform: translate(-2px, 1px) skewX(-1deg);
+                   filter: drop-shadow(-4px 0 0 rgba(255,31,78,0.6))
+                           drop-shadow(4px 0 0 rgba(0,220,255,0.4)); }
+      93%        { transform: none; filter: none; }
+      94%        { transform: translate(4px, -1px);
+                   filter: drop-shadow(3px 0 0 rgba(255,31,78,0.7)); }
+      95%        { transform: none; filter: none; }
+      100%       { transform: none; filter: none; }
+    }
+
+    /* glitch bars — random horizontal slices that flash */
+    .glitch-bars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      overflow: hidden;
+    }
+    .glitch-bars::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 4px;
+      background: rgba(255,31,78,0.6);
+      top: 30%;
+      animation: glitchBar1 5s 1.5s infinite;
+      opacity: 0;
+    }
+    .glitch-bars::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: rgba(0,220,255,0.5);
+      top: 65%;
+      animation: glitchBar2 7s 3s infinite;
+      opacity: 0;
+    }
+    @keyframes glitchBar1 {
+      0%,88%,95%,100% { opacity: 0; transform: none; }
+      89% { opacity: 1; transform: translateX(-8px); top: 28%; }
+      90% { opacity: 1; transform: translateX(12px); top: 31%; height: 8px; }
+      91% { opacity: 0; }
+      93% { opacity: 1; transform: translateX(-4px); top: 44%; height: 2px; }
+      94% { opacity: 0; }
+    }
+    @keyframes glitchBar2 {
+      0%,91%,97%,100% { opacity: 0; transform: none; }
+      92% { opacity: 1; transform: translateX(10px); top: 62%; }
+      93% { opacity: 1; transform: translateX(-6px); top: 67%; height: 4px; }
+      94% { opacity: 0; }
+      96% { opacity: 1; transform: translateX(4px); top: 55%; height: 2px; }
+      97% { opacity: 0; }
+    }
+
+    /* hero tag text glitch */
+    .hero-tag { animation: fadeUp 1s 0.3s forwards, textGlitch 6s 3.5s infinite; }
+    @keyframes textGlitch {
+      0%,94%,100% { clip-path: none; transform: none; color: var(--gray); }
+      95% { clip-path: polygon(0 20%,100% 20%,100% 40%,0 40%);
+            transform: translate(-4px); color: var(--accent); }
+      96% { clip-path: polygon(0 60%,100% 60%,100% 80%,0 80%);
+            transform: translate(4px); color: #00dcff; }
+      97% { clip-path: none; transform: none; color: var(--gray); }
+    }
+
+    /* statement glitch on scroll reveal */
+    .statement-text.visible {
+      animation: stmtGlitch 8s 1s infinite;
+    }
+    @keyframes stmtGlitch {
+      0%,96%,100% { filter: none; transform: none; }
+      97% { filter: drop-shadow(-3px 0 0 rgba(255,31,78,0.7))
+                    drop-shadow(3px 0 0 rgba(0,220,255,0.5));
+            transform: skewX(-0.5deg); }
+      98% { filter: none; transform: none; }
+      99% { filter: drop-shadow(2px 0 0 rgba(255,31,78,0.5)); }
+      100% { filter: none; }
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.35s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 24px 24px; }
+      .nav-links { display: none; }
+      section { padding: 80px 24px; }
+      #dropping { grid-template-columns: 1fr; }
+      .drop-left { border-right: none; border-bottom: 1px solid #1a1a1a; padding: 60px 24px; }
+      .drop-right { padding: 60px 24px; }
+      .preview-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .preview-cell:first-child { grid-row: span 1; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">SCHLATE.WEAR</a>
+    <ul class="nav-links">
+      <li><a href="#statement">Brand</a></li>
+      <li><a href="#dropping">Drop</a></li>
+      <li><a href="mailto:schlateofficial@gmail.com">Contact</a></li>
+      <li><a href="https://www.instagram.com/schlate.wear?igsh=dW0zOWVyYTczZXFv&utm_source=qr" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="#notify">Notify Me</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-noise"></div>
+    <div class="glitch-bars"></div>
+    <p class="hero-tag">Est. 2026 &nbsp;—&nbsp; Dropping Summer</p>
+    <div class="logo-wrap">
+      <!-- SCHLATE.WEAR logo as inline SVG -->
+      <svg class="logo-svg" viewBox="0 0 620 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="redglow">
+            <feGaussianBlur stdDeviation="12" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Red glow blob behind logo -->
+        <ellipse cx="270" cy="90" rx="220" ry="60" fill="#FF1F4E" opacity="0.12" filter="url(#redglow)"/>
+        <!-- Outer stroke / background pill -->
+        <rect x="8" y="20" width="510" height="120" rx="22" fill="none" stroke="#FF1F4E" stroke-width="1.5" opacity="0.2"/>
+        <!-- Main logo text -->
+        <text
+          x="30" y="120"
+          font-family="'Bebas Neue', Impact, sans-serif"
+          font-size="108"
+          font-style="italic"
+          fill="white"
+          stroke="black"
+          stroke-width="8"
+          paint-order="stroke"
+          filter="url(#glow)"
+          letter-spacing="-2"
+        >schlate</text>
+        <!-- WEAR sub-text -->
+        <text
+          x="310" y="148"
+          font-family="'Space Grotesk', sans-serif"
+          font-size="26"
+          font-weight="700"
+          fill="#FF1F4E"
+          letter-spacing="8"
+        >WEAR</text>
+      </svg>
+    </div>
+    <p class="hero-sub">Summer 2026 &nbsp;·&nbsp; Limited Drop &nbsp;·&nbsp; Stay Ready</p>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span>SCHLATE.WEAR</span><span class="dot">·</span>
+      <span>SUMMER 2026</span><span class="dot">·</span>
+      <span>LIMITED DROP</span><span class="dot">·</span>
+      <span>STAY READY</span><span class="dot">·</span>
+      <span>SCHLATE.WEAR</span><span class="dot">·</span>
+      <span>SUMMER 2026</span><span class="dot">·</span>
+      <span>LIMITED DROP</span><span class="dot">·</span>
+      <span>STAY READY</span><span class="dot">·</span>
+      <!-- duplicate for seamless loop -->
+      <span>SCHLATE.WEAR</span><span class="dot">·</span>
+      <span>SUMMER 2026</span><span class="dot">·</span>
+      <span>LIMITED DROP</span><span class="dot">·</span>
+      <span>STAY READY</span><span class="dot">·</span>
+      <span>SCHLATE.WEAR</span><span class="dot">·</span>
+      <span>SUMMER 2026</span><span class="dot">·</span>
+      <span>LIMITED DROP</span><span class="dot">·</span>
+      <span>STAY READY</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- STATEMENT -->
+  <section id="statement">
+    <span class="statement-label reveal">The Brand</span>
+    <h1 class="statement-text reveal reveal-delay-1">
+      Built Different.<br /><em>Worn</em> With Intent.
+    </h1>
+  </section>
+
+  <!-- DROPPING / ABOUT -->
+  <div id="dropping">
+    <div class="drop-left">
+      <p class="drop-label reveal">What We're About</p>
+      <h2 class="drop-title reveal reveal-delay-1">Summer<br /><span class="accent">Drop</span><br />2026</h2>
+      <p class="drop-body reveal reveal-delay-2">
+        SCHLATE.WEAR is a brand built by friends, for people who move with purpose.
+        No hype cycles. No overproduction. One drop, one chance. Summer 2026.
+      </p>
+    </div>
+    <div class="drop-right">
+      <!-- placeholder grid for future product shots -->
+      <div class="preview-grid reveal">
+        <div class="preview-cell"><span class="cell-label">SW</span></div>
+        <div class="preview-cell"><span class="cell-label">DROP 01</span></div>
+        <div class="preview-cell"><span class="cell-label">DROP 01</span></div>
+        <div class="preview-cell"><span class="cell-label">TBA</span></div>
+        <div class="preview-cell"><span class="cell-label">TBA</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFY -->
+  <section id="notify">
+    <span class="notify-eyebrow reveal">First to know</span>
+    <h2 class="notify-title reveal reveal-delay-1">Don't<br />Miss The Drop.</h2>
+    <p class="notify-sub reveal reveal-delay-2">Leave your email. We'll hit you when it's live.</p>
+    <div class="notify-form reveal reveal-delay-3">
+      <input type="email" placeholder="your@email.com" />
+      <button type="submit">Notify Me</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">SCHLATE.WEAR</span>
+    <span class="footer-copy">© 2026 SCHLATE.WEAR — All Rights Reserved</span>
+    <div class="footer-socials">
+      <a href="https://www.instagram.com/schlate.wear?igsh=dW0zOWVyYTczZXFv&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:schlateofficial@gmail.com">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // ── CURSOR
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, input').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+    });
+
+    // ── SCROLL REVEAL
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── NOTIFY FORM
+    document.querySelector('.notify-form button').addEventListener('click', () => {
+      const input = document.querySelector('.notify-form input');
+      if (input.value && input.value.includes('@')) {
+        const email = encodeURIComponent(input.value);
+        window.location.href = `mailto:schlateofficial@gmail.com?subject=Notify%20Me&body=Please%20add%20me%20to%20the%20drop%20list%3A%20${email}`;
+        input.value = '';
+        input.placeholder = 'You\'re on the list.';
+      }
+    });
+
+    // ── NAV blend mode scroll
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.style.mixBlendMode = 'normal';
+        nav.style.background = 'rgba(0,0,0,0.85)';
+        nav.style.backdropFilter = 'blur(12px)';
+        nav.style.borderBottom = '1px solid #1a1a1a';
+      } else {
+        nav.style.mixBlendMode = 'difference';
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
